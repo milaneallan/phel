@@ -1,723 +1,388 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aphelios | Skins Showcase</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: #02060a;
-            color: #f0e6d2;
-            font-family: 'Montserrat', sans-serif;
-            overflow-x: hidden;
-        }
-
-        h3, .logo {
-            font-family: 'Cinzel', serif;
-            letter-spacing: 2px;
-        }
-
-        /* Header */
-        header {
-            text-align: center;
-            padding: 50px 0;
-            position: relative;
-            z-index: 10;
-        }
-
-        .logo {
-            font-size: 3rem;
-            color: #c8aa6e;
-            text-shadow: 0 0 15px rgba(200, 170, 110, 0.5);
-        }
-
-        .subtitle {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            color: #888;
-        }
-
-        /* Galeria de Skins */
-        .skin-gallery {
-            display: flex;
-            height: 60vh;
-            width: 95%;
-            margin: 0 auto;
-            gap: 10px;
-        }
-
-        /* Cards Interativos */
-        .interactive-card-bg {
-            flex: 1;
-            position: relative;
-            border: 1px solid #333;
-            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-            cursor: pointer;
-            overflow: hidden;
-            filter: grayscale(40%);
-            border-radius: 0;
-        }
-
-        .interactive-card-bg:hover {
-            flex: 4;
-            filter: grayscale(0%);
-            border: 1px solid #c8aa6e;
-            box-shadow: 0 0 30px rgba(200, 170, 110, 0.3);
-        }
-
-        /* ==========================================
-           CARROSSEL DE IMAGENS DENTRO DO CARD
-        ========================================== */
-
-        /* Container do carrossel — ocupa 100% do card */
-        .card-carousel {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Cada slide de imagem */
-        .carousel-slide {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
-            transition: opacity 0.7s ease;
-        }
-
-        /* Slide ativo */
-        .carousel-slide.active {
-            opacity: 1;
-        }
-
-        /* Botões de navegação (← →) — só aparecem no hover do card */
-        .carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.55);
-            border: 1px solid rgba(200, 170, 110, 0.4);
-            color: #c8aa6e;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            font-size: 0.85rem;
-            cursor: pointer;
-            z-index: 20;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease, background 0.2s ease;
-            pointer-events: none;
-        }
-
-        /* Posição: anterior (esquerda) e próximo (direita) */
-        .carousel-btn.prev { left: 8px; }
-        .carousel-btn.next { right: 8px; }
-
-        /* Revelar botões quando o card estiver expandido */
-        .interactive-card-bg:hover .carousel-btn {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .carousel-btn:hover {
-            background: rgba(200, 170, 110, 0.3);
-        }
-
-        /* Indicadores de ponto (●) */
-        .carousel-dots {
-            position: absolute;
-            bottom: 55px;         /* acima do overlay de texto */
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 5px;
-            z-index: 20;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
-        .interactive-card-bg:hover .carousel-dots {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: rgba(200, 170, 110, 0.4);
-            cursor: pointer;
-            transition: background 0.3s ease, transform 0.2s ease;
-        }
-
-        .dot.active {
-            background: #c8aa6e;
-            transform: scale(1.3);
-        }
-
-        /* Contador  ex: "2 / 4" */
-        .carousel-counter {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.6);
-            color: #c8aa6e;
-            font-size: 0.65rem;
-            padding: 2px 7px;
-            border-radius: 10px;
-            z-index: 20;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            letter-spacing: 1px;
-        }
-
-        .interactive-card-bg:hover .carousel-counter {
-            opacity: 1;
-        }
-
-        /* ==========================================
-           OVERLAY DO CARD (texto + botão)
-        ========================================== */
-        .card-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 20px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.9));
-            transform: translateY(100%);
-            transition: transform 0.4s ease;
-            z-index: 15;
-        }
-
-        .interactive-card-bg:hover .card-overlay {
-            transform: translateY(0);
-        }
-
-        .card-content {
-            text-align: left;
-            color: white;
-        }
-
-        .skin-badge {
-            font-size: 0.7rem;
-            color: #c8aa6e;
-            text-transform: uppercase;
-            display: inline-block;
-            margin-bottom: 0.5rem;
-        }
-
-        .card-content h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.3rem;
-            color: #f0e6d2;
-        }
-
-        .card-content p {
-            font-size: 0.8rem;
-            color: #aaa;
-            margin-bottom: 0.8rem;
-        }
-
-        .interactive-details {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .interactive-details span {
-            font-size: 0.75rem;
-            color: #c8aa6e;
-        }
-
-        .interactive-btn {
-            background: transparent;
-            border: 1px solid #c8aa6e;
-            color: #c8aa6e;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.8rem;
-        }
-
-        .interactive-btn:hover {
-            background: #c8aa6e;
-            color: #02060a;
-            transform: translateY(-2px);
-        }
-
-        /* Rodapé */
-        footer {
-            text-align: center;
-            padding: 60px;
-            font-style: italic;
-            color: #444;
-        }
-
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .skin-gallery {
-                flex-direction: column;
-                height: auto;
-            }
-            .interactive-card-bg {
-                height: 200px;
-            }
-            .interactive-card-bg:hover {
-                flex: none;
-                height: 350px;
-            }
-        }
-
-        /* Scrollbar personalizada */
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #02060a; }
-        ::-webkit-scrollbar-thumb { background: #c8aa6e; border-radius: 5px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a08a4e; }
-    </style>
-</head>
-<body>
-
-    <header>
-        <nav>
-            <div class="logo">APHELIOS</div>
-            <p class="subtitle">A Arma dos devotos</p>
-        </nav>
-    </header>
-
-    <main>
-        <section class="skin-gallery">
-
-            <!-- Card 1 - Aphelios Lunari -->
-            <div class="interactive-card-bg" data-skin="Aphelios Lunari" data-images='[
-                "https://cdn.mos.cms.futurecdn.net/v2/t:0,l:240,cw:1440,ch:1080,q:80,w:1440/oBNwGUPPN8HZPpTuYqxYnW.jpg",
-                "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aphelios_0.jpg",
-                "https://www.leagueoflegends.com/page-data/en-us/champions/aphelios/page-data.json"
-            ]'>
-                <div class="card-carousel"></div>
-                <button class="carousel-btn prev">&#8592;</button>
-                <button class="carousel-btn next">&#8594;</button>
-                <div class="carousel-dots"></div>
-                <div class="carousel-counter"></div>
-                <div class="card-overlay">
-                    <div class="card-content">
-                        <span class="skin-badge"> Original</span>
-                        <h3> Aphelios Lunari</h3>
-                        <p> O Guardião da Lua</p>
-                        <div class="interactive-details">
-                            <span> 4.9</span>
-                            <span> 975 RP</span>
-                        </div>
-                        <button class="interactive-btn">Ver Detalhes</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 2 - Emissário da Escuridão -->
-            <div class="interactive-card-bg" data-skin="Emissário da Escuridão" data-images='[
-                "https://turbosmurfs.gg/storage/splash/Aphelios_1.jpg",
-                "https://opgg-static.akamaized.net/meta/images/lol/16.8.1/champion/tiles/Aphelios_1.jpg?image=q_auto:good,f_webp,w_722",
-                "https://cdn.communitydragon.org/latest/champion/aphelios/splash-art/skin/1"
-            ]'>
-                <div class="card-carousel"></div>
-                <button class="carousel-btn prev">&#8592;</button>
-                <button class="carousel-btn next">&#8594;</button>
-                <div class="carousel-dots"></div>
-                <div class="carousel-counter"></div>
-                <div class="card-overlay">
-                    <div class="card-content">
-                        <span class="skin-badge"> Épica</span>
-                        <h3>Emissário da Escuridão</h3>
-                        <p>Poder das Sombras</p>
-                        <div class="interactive-details">
-                            <span> 4.8</span>
-                            <span> 1350 RP</span>
-                        </div>
-                        <button class="interactive-btn">Ver Detalhes</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3 - HEARTSTEEL -->
-            <div class="interactive-card-bg" data-skin="HEARTSTEEL Aphelios" data-images='[
-                "https://www.esports.net/wp-content/uploads/2024/10/heartsteel-aphelios.jpg",
-                "https://opgg-static.akamaized.net/meta/images/lol/16.8.1/champion/tiles/Aphelios_16.jpg?image=q_auto:good,f_webp,w_722",
-                "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aphelios_16.jpg"
-            ]'>
-                <div class="card-carousel"></div>
-                <button class="carousel-btn prev">&#8592;</button>
-                <button class="carousel-btn next">&#8594;</button>
-                <div class="carousel-dots"></div>
-                <div class="carousel-counter"></div>
-                <div class="card-overlay">
-                    <div class="card-content">
-                        <span class="skin-badge"> Banda</span>
-                        <h3>HEARTSTEEL</h3>
-                        <p>O Compositor do Grupo</p>
-                        <div class="interactive-details">
-                            <span> 4.9</span>
-                            <span> 1350 RP</span>
-                        </div>
-                        <button class="interactive-btn">Ver Detalhes</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 4 - Florescer Espiritual -->
-            <div class="interactive-card-bg" data-skin="Florescer Espiritual" data-images='[
-                "https://lh7-rt.googleusercontent.com/docsz/AD_4nXcfYSJgjHrovz6_62WlMOzMeH7xV0HcvO5tVteHLlQTdgxzlBJ0YaDPJUOoigABLZFxu8tjA3fnw_Ty0VsrtYJgjAeLsaQth1sjQRMe3D9ZS_hmwJvJyAswLDXiBMYobJG1FmXFYnaYN-OkkX-tBRcUMml2?key=b7Zt1bkaikaJJvXVjwxIyg",
-                "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aphelios_10.jpg",
-                "https://opgg-static.akamaized.net/meta/images/lol/16.8.1/champion/tiles/Aphelios_10.jpg?image=q_auto:good,f_webp,w_722"
-            ]'>
-                <div class="card-carousel"></div>
-                <button class="carousel-btn prev">&#8592;</button>
-                <button class="carousel-btn next">&#8594;</button>
-                <div class="carousel-dots"></div>
-                <div class="carousel-counter"></div>
-                <div class="card-overlay">
-                    <div class="card-content">
-                        <span class="skin-badge"> Épica</span>
-                        <h3>Florescer Espiritual</h3>
-                        <p>Conexão com a Natureza</p>
-                        <div class="interactive-details">
-                            <span> 4.8</span>
-                            <span> 1350 RP</span>
-                        </div>
-                        <button class="interactive-btn">Ver Detalhes</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 5 - Termas Prestígio -->
-            <div class="interactive-card-bg" data-skin="Termas do Florescer Espiritual Prestígio" data-images='[
-                "https://cdnb.artstation.com/p/assets/images/images/090/588/727/large/blake-byun-prestige-spirit-blossom-springs-aphelios-final-artstation-crop-2.jpg?1754323150",
-                "https://opgg-static.akamaized.net/meta/images/lol/16.8.1/champion/tiles/Aphelios_21.jpg?image=q_auto:good,f_webp,w_722",
-                "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aphelios_21.jpg"
-            ]'>
-                <div class="card-carousel"></div>
-                <button class="carousel-btn prev">&#8592;</button>
-                <button class="carousel-btn next">&#8594;</button>
-                <div class="carousel-dots"></div>
-                <div class="carousel-counter"></div>
-                <div class="card-overlay">
-                    <div class="card-content">
-                        <span class="skin-badge"> Prestígio</span>
-                        <h3>Termas do Florescer</h3>
-                        <p>Edição Especial Prestígio</p>
-                        <div class="interactive-details">
-                            <span> 5.0</span>
-                            <span> 150</span>
-                        </div>
-                        <button class="interactive-btn">Ver Detalhes</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 6 - Fera Lunar -->
-            <div class="interactive-card-bg" data-skin="Fera Lunar" data-images='[
-                "https://turbosmurfs.gg/storage/splash/Aphelios_9.jpg",
-                "https://opgg-static.akamaized.net/meta/images/lol/16.8.1/champion/tiles/Aphelios_5.jpg?image=q_auto:good,f_webp,w_722",
-                "https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Aphelios_5.jpg"
-            ]'>
-                <div class="card-carousel"></div>
-                <button class="carousel-btn prev">&#8592;</button>
-                <button class="carousel-btn next">&#8594;</button>
-                <div class="carousel-dots"></div>
-                <div class="carousel-counter"></div>
-                <div class="card-overlay">
-                    <div class="card-content">
-                        <span class="skin-badge"> Legado</span>
-                        <h3>Fera Lunar</h3>
-                        <p>A Besta da Noite</p>
-                        <div class="interactive-details">
-                            <span> 4.7</span>
-                            <span> 1350 RP</span>
-                        </div>
-                        <button class="interactive-btn">Ver Detalhes</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 7 - EDG Aphelios -->
-            <div class="interactive-card-bg" data-skin="EDG Aphelios" data-images='[
-                "https://opgg-static.akamaized.net/meta/images/lol/16.8.1/champion/tiles/Aphelios_18.jpg?image=q_auto:good,f_webp,w_722&v=1776924597",
-                "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aphelios_18.jpg",
-                "https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Aphelios_18.jpg"
-            ]'>
-                <div class="card-carousel"></div>
-                <button class="carousel-btn prev">&#8592;</button>
-                <button class="carousel-btn next">&#8594;</button>
-                <div class="carousel-dots"></div>
-                <div class="carousel-counter"></div>
-                <div class="card-overlay">
-                    <div class="card-content">
-                        <span class="skin-badge"> Mundial</span>
-                        <h3>EDG Aphelios</h3>
-                        <p>Campeões 2021</p>
-                        <div class="interactive-details">
-                            <span> 4.9</span>
-                            <span> 1350 RP</span>
-                        </div>
-                        <button class="interactive-btn">Ver Detalhes</button>
-                    </div>
-                </div>
-            </div>
-
-        </section>
-    </main>
-
-    <footer>
-        <p>A lua sussurra o caminho. Alune guia os passos.</p>
-    </footer>
-
-    <script>
-        /* ================================================
-           LÓGICA DO CARROSSEL
-           Cada card tem: array de imagens, índice atual,
-           slides, dots, counter, botões prev/next.
-        ================================================ */
-
-        // Armazena o estado de cada card
-        const carouselStates = new Map();
-
-        function initCarousels() {
-            document.querySelectorAll('.interactive-card-bg').forEach(card => {
-                const images = JSON.parse(card.dataset.images || '[]');
-                if (!images.length) return;
-
-                const carousel  = card.querySelector('.card-carousel');
-                const dotsEl    = card.querySelector('.carousel-dots');
-                const counterEl = card.querySelector('.carousel-counter');
-                const prevBtn   = card.querySelector('.carousel-btn.prev');
-                const nextBtn   = card.querySelector('.carousel-btn.next');
-
-                // Cria os slides
-                images.forEach((src, i) => {
-                    const slide = document.createElement('div');
-                    slide.className = 'carousel-slide' + (i === 0 ? ' active' : '');
-                    slide.style.backgroundImage = `url('${src}')`;
-                    carousel.appendChild(slide);
-                });
-
-                // Cria os dots
-                images.forEach((_, i) => {
-                    const dot = document.createElement('div');
-                    dot.className = 'dot' + (i === 0 ? ' active' : '');
-                    dot.addEventListener('click', e => {
-                        e.stopPropagation();
-                        goTo(card, i);
-                    });
-                    dotsEl.appendChild(dot);
-                });
-
-                // Estado inicial
-                carouselStates.set(card, { current: 0, total: images.length });
-                updateCounter(card);
-
-                // Botões prev / next
-                prevBtn.addEventListener('click', e => {
-                    e.stopPropagation();
-                    const { current, total } = carouselStates.get(card);
-                    goTo(card, (current - 1 + total) % total);
-                });
-
-                nextBtn.addEventListener('click', e => {
-                    e.stopPropagation();
-                    const { current, total } = carouselStates.get(card);
-                    goTo(card, (current + 1) % total);
-                });
-
-                // Botão "Ver Detalhes"
-                card.querySelector('.interactive-btn').addEventListener('click', e => {
-                    e.stopPropagation();
-                    const state = carouselStates.get(card);
-                    const slides = card.querySelectorAll('.carousel-slide');
-                    const imgUrl = slides[state.current].style.backgroundImage
-                        .replace(/url\(['"]?(.*?)['"]?\)/, '$1');
-                    verSkin(card.dataset.skin, imgUrl);
-                });
-            });
-        }
-
-        // Navega para o slide de índice `index`
-        function goTo(card, index) {
-            const state  = carouselStates.get(card);
-            const slides = card.querySelectorAll('.carousel-slide');
-            const dots   = card.querySelectorAll('.dot');
-
-            slides[state.current].classList.remove('active');
-            dots[state.current].classList.remove('active');
-
-            state.current = index;
-
-            slides[state.current].classList.add('active');
-            dots[state.current].classList.add('active');
-
-            updateCounter(card);
-        }
-
-        function updateCounter(card) {
-            const { current, total } = carouselStates.get(card);
-            card.querySelector('.carousel-counter').textContent =
-                `${current + 1} / ${total}`;
-        }
-
-        // Inicializa ao carregar
-        initCarousels();
-
-
-        /* ================================================
-           MODAL DE DETALHES
-        ================================================ */
-        function verSkin(skinName, imagemUrl) {
-            const modal = document.createElement('div');
-            modal.className = 'skin-modal';
-            modal.innerHTML = `
-                <div class="skin-modal-content">
-                    <button class="close-modal" onclick="this.closest('.skin-modal').remove()">×</button>
-                    <div class="modal-image-container">
-                        <img src="${imagemUrl}" alt="${skinName}" class="modal-skin-image">
-                    </div>
-                    <h2>${skinName}</h2>
-                    <p>Skin exclusiva disponível na loja por tempo limitado!</p>
-                    <div class="modal-details">
-                        <span> Avaliação: 4.9</span>
-                        <span> Raridade: Especial</span>
-                    </div>
-                    <button class="buy-btn" onclick="comprarSkin('${skinName}')">Adquirir Agora</button>
-                </div>
-            `;
-
-            modal.style.cssText = `
-                position: fixed; top: 0; left: 0;
-                width: 100%; height: 100%;
-                background: rgba(0,0,0,0.95);
-                display: flex; justify-content: center; align-items: center;
-                z-index: 10000;
-                animation: fadeIn 0.3s ease;
-            `;
-
-            document.body.appendChild(modal);
-
-            modal.addEventListener('click', e => {
-                if (e.target === modal) modal.remove();
-            });
-        }
-
-        function comprarSkin(skinName) {
-            alert(`✅ Você será redirecionado para adquirir: ${skinName}!`);
-            document.querySelector('.skin-modal')?.remove();
-        }
-
-
-        /* ================================================
-           ESTILOS DO MODAL (injetados dinamicamente)
-        ================================================ */
-        const modalStyles = document.createElement('style');
-        modalStyles.textContent = `
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to   { opacity: 1; }
-            }
-            @keyframes slideUp {
-                from { transform: translateY(50px); opacity: 0; }
-                to   { transform: translateY(0);    opacity: 1; }
-            }
-
-            .skin-modal-content {
-                background: linear-gradient(135deg, #0a0a1a, #02060a);
-                padding: 2rem;
-                border-radius: 20px;
-                text-align: center;
-                max-width: 450px;
-                width: 90%;
-                position: relative;
-                animation: slideUp 0.3s ease;
-                border: 1px solid #c8aa6e;
-            }
-
-            .close-modal {
-                position: absolute; top: 10px; right: 20px;
-                font-size: 2rem; background: none; border: none;
-                color: #c8aa6e; cursor: pointer;
-                transition: transform 0.2s;
-                z-index: 10;
-            }
-            .close-modal:hover { transform: scale(1.2); }
-
-            .modal-image-container {
-                width: 100%; height: 250px;
-                border-radius: 15px; overflow: hidden;
-                margin-bottom: 1.5rem;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            }
-
-            .modal-skin-image {
-                width: 100%; height: 100%;
-                object-fit: cover;
-                transition: transform 0.3s;
-            }
-            .modal-skin-image:hover { transform: scale(1.05); }
-
-            .skin-modal-content h2 {
-                color: #c8aa6e;
-                font-family: 'Cinzel', serif;
-                margin-bottom: 0.8rem;
-                font-size: 1.5rem;
-            }
-
-            .skin-modal-content p { color: #aaa; margin-bottom: 1rem; }
-
-            .modal-details {
-                display: flex; justify-content: center;
-                gap: 1rem; margin: 1rem 0;
-            }
-
-            .modal-details span {
-                background: rgba(200,170,110,0.1);
-                padding: 0.3rem 0.8rem;
-                border-radius: 20px;
-                font-size: 0.8rem;
-                color: #c8aa6e;
-            }
-
-            .buy-btn {
-                background: transparent;
-                border: 1px solid #c8aa6e;
-                color: #c8aa6e;
-                padding: 0.75rem 1.5rem;
-                border-radius: 5px;
-                font-weight: bold;
-                cursor: pointer;
-                margin-top: 1rem;
-                transition: all 0.3s;
-                width: 100%;
-            }
-            .buy-btn:hover {
-                background: #c8aa6e;
-                color: #02060a;
-                transform: translateY(-2px);
-            }
-        `;
-        document.head.appendChild(modalStyles);
-    </script>
-</body>
-</html>
+/* Reset e Estilos Globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #16213e 100%);
+    color: #f0e6d2;
+    font-family: 'Montserrat', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.7) 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+h3, .logo {
+    font-family: 'Cinzel', serif;
+    letter-spacing: 2px;
+}
+
+/* Header */
+header {
+    position: relative;
+    z-index: 10;
+    padding: 2rem;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+}
+
+nav {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-family: 'Cinzel', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #c9a03d, #f4d03f, #c9a03d);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px rgba(201, 160, 61, 0.3);
+    animation: fadeInDown 1s ease;
+}
+
+.subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    color: #a0a0c0;
+    margin-top: 0.5rem;
+    animation: fadeInUp 1s ease;
+}
+
+/* Main Gallery */
+main {
+    position: relative;
+    z-index: 5;
+    padding: 2rem;
+}
+
+.skin-gallery {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+/* Skin Cards - Versão Interativa com Hover Expansivo */
+.skin-card {
+    position: relative;
+    width: 320px;
+    height: 450px;
+    border-radius: 20px;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    filter: grayscale(30%);
+}
+
+.skin-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    filter: grayscale(0%);
+    border: 1px solid rgba(201,160,61,0.5);
+}
+
+.skin-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.9) 100%);
+    z-index: 1;
+    transition: all 0.4s ease;
+}
+
+.skin-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(201,160,61,0.2) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 1;
+}
+
+.skin-card:hover::after {
+    opacity: 1;
+}
+
+/* Info da Skin */
+.skin-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 50%, transparent 100%);
+    z-index: 2;
+    transition: transform 0.4s ease;
+}
+
+.skin-card:hover .skin-info {
+    transform: translateY(-10px);
+}
+
+.skin-info span {
+    display: inline-block;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.75rem;
+    background: linear-gradient(135deg, #c9a03d, #f4d03f);
+    border-radius: 20px;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 0.75rem;
+    color: #1a1a2e;
+}
+
+.skin-info h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    color: #f4d03f;
+}
+
+.skin-info p {
+    font-size: 0.9rem;
+    color: #c9c9e0;
+    margin-bottom: 1rem;
+}
+
+/* Stats dentro do card */
+.stats {
+    list-style: none;
+    margin: 1rem 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.stats li {
+    font-size: 0.85rem;
+    color: #a0a0c0;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 0.3rem;
+}
+
+.stats li span {
+    background: none;
+    padding: 0;
+    color: #f4d03f;
+    font-weight: bold;
+}
+
+/* Botão Comprar */
+.btn-buy {
+    background: linear-gradient(135deg, #c9a03d, #f4d03f);
+    border: none;
+    color: #1a1a2e;
+    padding: 0.75rem 1.5rem;
+    border-radius: 30px;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.85rem;
+}
+
+.btn-buy:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(201, 160, 61, 0.4);
+    background: linear-gradient(135deg, #f4d03f, #c9a03d);
+}
+
+.btn-buy:active {
+    transform: translateY(0);
+}
+
+/* Footer */
+footer {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+    font-style: italic;
+    color: #a0a0c0;
+    font-size: 0.9rem;
+}
+
+/* Animações */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    to {
+        box-shadow: 0 10px 40px rgba(201, 160, 61, 0.3);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Efeitos de hover adicionais */
+.skin-card:hover .skin-info span {
+    animation: pulse 0.5s ease;
+}
+
+.skin-card:hover {
+    animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .logo {
+        font-size: 2rem;
+    }
+    
+    main {
+        padding: 1rem;
+    }
+    
+    .skin-gallery {
+        gap: 1.5rem;
+    }
+    
+    .skin-card {
+        width: 280px;
+        height: 400px;
+    }
+    
+    .skin-info h3 {
+        font-size: 1.2rem;
+    }
+    
+    .stats li {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .skin-info {
+        padding: 1rem;
+    }
+    
+    .skin-info h3 {
+        font-size: 1rem;
+    }
+    
+    .stats {
+        margin: 0.5rem 0;
+    }
+    
+    .btn-buy {
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+    }
+    
+    .skin-card {
+        width: 260px;
+        height: 380px;
+    }
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a1a2e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #c9a03d, #f4d03f);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #f4d03f;
+}
+
+/* Loading effect para imagens */
+.skin-card {
+    position: relative;
+    background-color: #2a2a3e;
+}
+
+.skin-card.loaded::before {
+    animation: fadeIn 0.5s ease;
+}
+
+
+
+
