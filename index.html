@@ -45,7 +45,7 @@
             color: #888;
         }
 
-        /* Galeria de Skins (Layout Dinâmico) */
+        /* Galeria de Skins */
         .skin-gallery {
             display: flex;
             height: 60vh;
@@ -58,8 +58,6 @@
         .interactive-card-bg {
             flex: 1;
             position: relative;
-            background-size: cover;
-            background-position: center;
             border: 1px solid #333;
             transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
             cursor: pointer;
@@ -75,7 +73,127 @@
             box-shadow: 0 0 30px rgba(200, 170, 110, 0.3);
         }
 
-        /* Overlay do card */
+        /* ==========================================
+           CARROSSEL DE IMAGENS DENTRO DO CARD
+        ========================================== */
+
+        /* Container do carrossel — ocupa 100% do card */
+        .card-carousel {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Cada slide de imagem */
+        .carousel-slide {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 0.7s ease;
+        }
+
+        /* Slide ativo */
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        /* Botões de navegação (← →) — só aparecem no hover do card */
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.55);
+            border: 1px solid rgba(200, 170, 110, 0.4);
+            color: #c8aa6e;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.85rem;
+            cursor: pointer;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease, background 0.2s ease;
+            pointer-events: none;
+        }
+
+        /* Posição: anterior (esquerda) e próximo (direita) */
+        .carousel-btn.prev { left: 8px; }
+        .carousel-btn.next { right: 8px; }
+
+        /* Revelar botões quando o card estiver expandido */
+        .interactive-card-bg:hover .carousel-btn {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .carousel-btn:hover {
+            background: rgba(200, 170, 110, 0.3);
+        }
+
+        /* Indicadores de ponto (●) */
+        .carousel-dots {
+            position: absolute;
+            bottom: 55px;         /* acima do overlay de texto */
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .interactive-card-bg:hover .carousel-dots {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(200, 170, 110, 0.4);
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .dot.active {
+            background: #c8aa6e;
+            transform: scale(1.3);
+        }
+
+        /* Contador  ex: "2 / 4" */
+        .carousel-counter {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.6);
+            color: #c8aa6e;
+            font-size: 0.65rem;
+            padding: 2px 7px;
+            border-radius: 10px;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .interactive-card-bg:hover .carousel-counter {
+            opacity: 1;
+        }
+
+        /* ==========================================
+           OVERLAY DO CARD (texto + botão)
+        ========================================== */
         .card-overlay {
             position: absolute;
             bottom: 0;
@@ -85,6 +203,7 @@
             background: linear-gradient(transparent, rgba(0,0,0,0.9));
             transform: translateY(100%);
             transition: transform 0.4s ease;
+            z-index: 15;
         }
 
         .interactive-card-bg:hover .card-overlay {
@@ -153,7 +272,7 @@
             color: #444;
         }
 
-        /* Responsividade Básica */
+        /* Responsividade */
         @media (max-width: 768px) {
             .skin-gallery {
                 flex-direction: column;
@@ -169,22 +288,10 @@
         }
 
         /* Scrollbar personalizada */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #02060a;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #c8aa6e;
-            border-radius: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #a08a4e;
-        }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #02060a; }
+        ::-webkit-scrollbar-thumb { background: #c8aa6e; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a08a4e; }
     </style>
 </head>
 <body>
@@ -192,31 +299,49 @@
     <header>
         <nav>
             <div class="logo">APHELIOS</div>
-            <p class="subtitle">O Armamento da Fé</p>
+            <p class="subtitle">A Arma dos devotos</p>
         </nav>
     </header>
 
     <main>
         <section class="skin-gallery">
-            
-            <!-- Card Interativo 1 - Aphelios Lunari -->
-            <div class="interactive-card-bg" style="background-image: url('https://cdn.mos.cms.futurecdn.net/v2/t:0,l:240,cw:1440,ch:1080,q:80,w:1440/oBNwGUPPN8HZPpTuYqxYnW.jpg');">
+
+            <!-- Card 1 - Aphelios Lunari -->
+            <div class="interactive-card-bg" data-skin="Aphelios Lunari" data-images='[
+                "https://cdn.mos.cms.futurecdn.net/v2/t:0,l:240,cw:1440,ch:1080,q:80,w:1440/oBNwGUPPN8HZPpTuYqxYnW.jpg",
+                "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aphelios_0.jpg",
+                "https://www.leagueoflegends.com/page-data/en-us/champions/aphelios/page-data.json"
+            ]'>
+                <div class="card-carousel"></div>
+                <button class="carousel-btn prev">&#8592;</button>
+                <button class="carousel-btn next">&#8594;</button>
+                <div class="carousel-dots"></div>
+                <div class="carousel-counter"></div>
                 <div class="card-overlay">
                     <div class="card-content">
                         <span class="skin-badge"> Original</span>
-                        <h3>Aphelios Lunari</h3>
-                        <p>O Guardião da Lua</p>
+                        <h3> Aphelios Lunari</h3>
+                        <p> O Guardião da Lua</p>
                         <div class="interactive-details">
                             <span> 4.9</span>
                             <span> 975 RP</span>
                         </div>
-                        <button class="interactive-btn" onclick="verSkin('Aphelios Lunari', 'https://i.pinimg.com/474x/c5/f5/40/c5f540041f86eb2ac91bc43b61624721.jpg')">Ver Detalhes</button>
+                        <button class="interactive-btn">Ver Detalhes</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Card Interativo 2 - Emissário da Escuridão -->
-            <div class="interactive-card-bg" style="background-image: url('img/emissario.jpg');">
+            <!-- Card 2 - Emissário da Escuridão -->
+            <div class="interactive-card-bg" data-skin="Emissário da Escuridão" data-images='[
+                "https://turbosmurfs.gg/storage/splash/Aphelios_1.jpg",
+                "https://opgg-static.akamaized.net/meta/images/lol/16.8.1/champion/tiles/Aphelios_1.jpg?image=q_auto:good,f_webp,w_722",
+                "https://cdn.communitydragon.org/latest/champion/aphelios/splash-art/skin/1"
+            ]'>
+                <div class="card-carousel"></div>
+                <button class="carousel-btn prev">&#8592;</button>
+                <button class="carousel-btn next">&#8594;</button>
+                <div class="carousel-dots"></div>
+                <div class="carousel-counter"></div>
                 <div class="card-overlay">
                     <div class="card-content">
                         <span class="skin-badge"> Épica</span>
@@ -226,13 +351,22 @@
                             <span> 4.8</span>
                             <span> 1350 RP</span>
                         </div>
-                        <button class="interactive-btn" onclick="verSkin('Emissário da Escuridão', 'https://images.steamusercontent.com/ugc/1809877836467538078/2C5BF1957BBE2514182EC0214D37CFECA438A09D/?imw=512&&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false')">Ver Detalhes</button>
+                        <button class="interactive-btn">Ver Detalhes</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Card Interativo 3 - HEARTSTEEL -->
-            <div class="interactive-card-bg" style="background-image: url('https://www.esports.net/wp-content/uploads/2024/10/heartsteel-aphelios.jpg');">
+            <!-- Card 3 - HEARTSTEEL -->
+            <div class="interactive-card-bg" data-skin="HEARTSTEEL Aphelios" data-images='[
+                "https://www.esports.net/wp-content/uploads/2024/10/heartsteel-aphelios.jpg",
+                "https://opgg-static.akamaized.net/meta/images/lol/16.8.1/champion/tiles/Aphelios_16.jpg?image=q_auto:good,f_webp,w_722",
+                "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aphelios_16.jpg"
+            ]'>
+                <div class="card-carousel"></div>
+                <button class="carousel-btn prev">&#8592;</button>
+                <button class="carousel-btn next">&#8594;</button>
+                <div class="carousel-dots"></div>
+                <div class="carousel-counter"></div>
                 <div class="card-overlay">
                     <div class="card-content">
                         <span class="skin-badge"> Banda</span>
@@ -242,45 +376,72 @@
                             <span> 4.9</span>
                             <span> 1350 RP</span>
                         </div>
-                        <button class="interactive-btn" onclick="verSkin('HEARTSTEEL Aphelios', 'https://www.esports.net/wp-content/uploads/2024/10/heartsteel-aphelios.jpg')">Ver Detalhes</button>
+                        <button class="interactive-btn">Ver Detalhes</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Card Interativo 4 - Florescer Espiritual -->
-            <div class="interactive-card-bg" style="background-image: url('https://lh7-rt.googleusercontent.com/docsz/AD_4nXcfYSJgjHrovz6_62WlMOzMeH7xV0HcvO5tVteHLlQTdgxzlBJ0YaDPJUOoigABLZFxu8tjA3fnw_Ty0VsrtYJgjAeLsaQth1sjQRMe3D9ZS_hmwJvJyAswLDXiBMYobJG1FmXFYnaYN-OkkX-tBRcUMml2?key=b7Zt1bkaikaJJvXVjwxIyg');">
+            <!-- Card 4 - Florescer Espiritual -->
+            <div class="interactive-card-bg" data-skin="Florescer Espiritual" data-images='[
+                "https://lh7-rt.googleusercontent.com/docsz/AD_4nXcfYSJgjHrovz6_62WlMOzMeH7xV0HcvO5tVteHLlQTdgxzlBJ0YaDPJUOoigABLZFxu8tjA3fnw_Ty0VsrtYJgjAeLsaQth1sjQRMe3D9ZS_hmwJvJyAswLDXiBMYobJG1FmXFYnaYN-OkkX-tBRcUMml2?key=b7Zt1bkaikaJJvXVjwxIyg",
+                "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aphelios_10.jpg",
+                "https://opgg-static.akamaized.net/meta/images/lol/16.8.1/champion/tiles/Aphelios_10.jpg?image=q_auto:good,f_webp,w_722"
+            ]'>
+                <div class="card-carousel"></div>
+                <button class="carousel-btn prev">&#8592;</button>
+                <button class="carousel-btn next">&#8594;</button>
+                <div class="carousel-dots"></div>
+                <div class="carousel-counter"></div>
                 <div class="card-overlay">
                     <div class="card-content">
-                        <span class="skin-badge">Épica</span>
+                        <span class="skin-badge"> Épica</span>
                         <h3>Florescer Espiritual</h3>
                         <p>Conexão com a Natureza</p>
                         <div class="interactive-details">
                             <span> 4.8</span>
                             <span> 1350 RP</span>
                         </div>
-                        <button class="interactive-btn" onclick="verSkin('Florescer Espiritual', 'https://lh7-rt.googleusercontent.com/docsz/AD_4nXcfYSJgjHrovz6_62WlMOzMeH7xV0HcvO5tVteHLlQTdgxzlBJ0YaDPJUOoigABLZFxu8tjA3fnw_Ty0VsrtYJgjAeLsaQth1sjQRMe3D9ZS_hmwJvJyAswLDXiBMYobJG1FmXFYnaYN-OkkX-tBRcUMml2?key=b7Zt1bkaikaJJvXVjwxIyg')">Ver Detalhes</button>
+                        <button class="interactive-btn">Ver Detalhes</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Card Interativo 5 - Termas do Florescer Espiritual Prestígio -->
-            <div class="interactive-card-bg" style="background-image: url('https://cdnb.artstation.com/p/assets/images/images/090/588/727/large/blake-byun-prestige-spirit-blossom-springs-aphelios-final-artstation-crop-2.jpg?1754323150');">
+            <!-- Card 5 - Termas Prestígio -->
+            <div class="interactive-card-bg" data-skin="Termas do Florescer Espiritual Prestígio" data-images='[
+                "https://cdnb.artstation.com/p/assets/images/images/090/588/727/large/blake-byun-prestige-spirit-blossom-springs-aphelios-final-artstation-crop-2.jpg?1754323150",
+                "https://opgg-static.akamaized.net/meta/images/lol/16.8.1/champion/tiles/Aphelios_21.jpg?image=q_auto:good,f_webp,w_722",
+                "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aphelios_21.jpg"
+            ]'>
+                <div class="card-carousel"></div>
+                <button class="carousel-btn prev">&#8592;</button>
+                <button class="carousel-btn next">&#8594;</button>
+                <div class="carousel-dots"></div>
+                <div class="carousel-counter"></div>
                 <div class="card-overlay">
                     <div class="card-content">
-                        <span class="skin-badge">Prestígio</span>
+                        <span class="skin-badge"> Prestígio</span>
                         <h3>Termas do Florescer</h3>
                         <p>Edição Especial Prestígio</p>
                         <div class="interactive-details">
                             <span> 5.0</span>
                             <span> 150</span>
                         </div>
-                        <button class="interactive-btn" onclick="verSkin('Termas do Florescer Espiritual Prestígio', 'https://cdnb.artstation.com/p/assets/images/images/090/588/727/large/blake-byun-prestige-spirit-blossom-springs-aphelios-final-artstation-crop-2.jpg?1754323150')">Ver Detalhes</button>
+                        <button class="interactive-btn">Ver Detalhes</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Card Interativo 6 - Fera Lunar -->
-            <div class="interactive-card-bg" style="background-image: url('img/lubeats.jpg');">
+            <!-- Card 6 - Fera Lunar -->
+            <div class="interactive-card-bg" data-skin="Fera Lunar" data-images='[
+                "https://turbosmurfs.gg/storage/splash/Aphelios_9.jpg",
+                "https://opgg-static.akamaized.net/meta/images/lol/16.8.1/champion/tiles/Aphelios_5.jpg?image=q_auto:good,f_webp,w_722",
+                "https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Aphelios_5.jpg"
+            ]'>
+                <div class="card-carousel"></div>
+                <button class="carousel-btn prev">&#8592;</button>
+                <button class="carousel-btn next">&#8594;</button>
+                <div class="carousel-dots"></div>
+                <div class="carousel-counter"></div>
                 <div class="card-overlay">
                     <div class="card-content">
                         <span class="skin-badge"> Legado</span>
@@ -290,23 +451,32 @@
                             <span> 4.7</span>
                             <span> 1350 RP</span>
                         </div>
-                        <button class="interactive-btn" onclick="verSkin('Fera Lunar', 'img/lubeats.jpg')">Ver Detalhes</button>
+                        <button class="interactive-btn">Ver Detalhes</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Card Interativo 7 - EDG Aphelios -->
-            <div class="interactive-card-bg" style="background-image: url('https://opgg-static.akamaized.net/meta/images/lol/16.8.1/champion/tiles/Aphelios_18.jpg?image=q_auto:good,f_webp,w_722&v=1776924597');">
+            <!-- Card 7 - EDG Aphelios -->
+            <div class="interactive-card-bg" data-skin="EDG Aphelios" data-images='[
+                "https://opgg-static.akamaized.net/meta/images/lol/16.8.1/champion/tiles/Aphelios_18.jpg?image=q_auto:good,f_webp,w_722&v=1776924597",
+                "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aphelios_18.jpg",
+                "https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Aphelios_18.jpg"
+            ]'>
+                <div class="card-carousel"></div>
+                <button class="carousel-btn prev">&#8592;</button>
+                <button class="carousel-btn next">&#8594;</button>
+                <div class="carousel-dots"></div>
+                <div class="carousel-counter"></div>
                 <div class="card-overlay">
                     <div class="card-content">
-                        <span class="skin-badge">Mundial</span>
+                        <span class="skin-badge"> Mundial</span>
                         <h3>EDG Aphelios</h3>
                         <p>Campeões 2021</p>
                         <div class="interactive-details">
                             <span> 4.9</span>
                             <span> 1350 RP</span>
                         </div>
-                        <button class="interactive-btn" onclick="verSkin('EDG Aphelios', 'https://opgg-static.akamaized.net/meta/images/lol/16.8.1/champion/tiles/Aphelios_18.jpg?image=q_auto:good,f_webp,w_722&v=1776924597')">Ver Detalhes</button>
+                        <button class="interactive-btn">Ver Detalhes</button>
                     </div>
                 </div>
             </div>
@@ -319,7 +489,104 @@
     </footer>
 
     <script>
-        // Função para mostrar detalhes da skin COM IMAGEM
+        /* ================================================
+           LÓGICA DO CARROSSEL
+           Cada card tem: array de imagens, índice atual,
+           slides, dots, counter, botões prev/next.
+        ================================================ */
+
+        // Armazena o estado de cada card
+        const carouselStates = new Map();
+
+        function initCarousels() {
+            document.querySelectorAll('.interactive-card-bg').forEach(card => {
+                const images = JSON.parse(card.dataset.images || '[]');
+                if (!images.length) return;
+
+                const carousel  = card.querySelector('.card-carousel');
+                const dotsEl    = card.querySelector('.carousel-dots');
+                const counterEl = card.querySelector('.carousel-counter');
+                const prevBtn   = card.querySelector('.carousel-btn.prev');
+                const nextBtn   = card.querySelector('.carousel-btn.next');
+
+                // Cria os slides
+                images.forEach((src, i) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'carousel-slide' + (i === 0 ? ' active' : '');
+                    slide.style.backgroundImage = `url('${src}')`;
+                    carousel.appendChild(slide);
+                });
+
+                // Cria os dots
+                images.forEach((_, i) => {
+                    const dot = document.createElement('div');
+                    dot.className = 'dot' + (i === 0 ? ' active' : '');
+                    dot.addEventListener('click', e => {
+                        e.stopPropagation();
+                        goTo(card, i);
+                    });
+                    dotsEl.appendChild(dot);
+                });
+
+                // Estado inicial
+                carouselStates.set(card, { current: 0, total: images.length });
+                updateCounter(card);
+
+                // Botões prev / next
+                prevBtn.addEventListener('click', e => {
+                    e.stopPropagation();
+                    const { current, total } = carouselStates.get(card);
+                    goTo(card, (current - 1 + total) % total);
+                });
+
+                nextBtn.addEventListener('click', e => {
+                    e.stopPropagation();
+                    const { current, total } = carouselStates.get(card);
+                    goTo(card, (current + 1) % total);
+                });
+
+                // Botão "Ver Detalhes"
+                card.querySelector('.interactive-btn').addEventListener('click', e => {
+                    e.stopPropagation();
+                    const state = carouselStates.get(card);
+                    const slides = card.querySelectorAll('.carousel-slide');
+                    const imgUrl = slides[state.current].style.backgroundImage
+                        .replace(/url\(['"]?(.*?)['"]?\)/, '$1');
+                    verSkin(card.dataset.skin, imgUrl);
+                });
+            });
+        }
+
+        // Navega para o slide de índice `index`
+        function goTo(card, index) {
+            const state  = carouselStates.get(card);
+            const slides = card.querySelectorAll('.carousel-slide');
+            const dots   = card.querySelectorAll('.dot');
+
+            slides[state.current].classList.remove('active');
+            dots[state.current].classList.remove('active');
+
+            state.current = index;
+
+            slides[state.current].classList.add('active');
+            dots[state.current].classList.add('active');
+
+            updateCounter(card);
+        }
+
+        function updateCounter(card) {
+            const { current, total } = carouselStates.get(card);
+            card.querySelector('.carousel-counter').textContent =
+                `${current + 1} / ${total}`;
+        }
+
+        // Inicializa ao carregar
+        initCarousels();
+
+
+        /* ================================================
+           MODAL DE DETALHES
+        ================================================ */
         function verSkin(skinName, imagemUrl) {
             const modal = document.createElement('div');
             modal.className = 'skin-modal';
@@ -338,52 +605,43 @@
                     <button class="buy-btn" onclick="comprarSkin('${skinName}')">Adquirir Agora</button>
                 </div>
             `;
-            
+
             modal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
+                position: fixed; top: 0; left: 0;
+                width: 100%; height: 100%;
                 background: rgba(0,0,0,0.95);
-                display: flex;
-                justify-content: center;
-                align-items: center;
+                display: flex; justify-content: center; align-items: center;
                 z-index: 10000;
                 animation: fadeIn 0.3s ease;
             `;
-            
+
             document.body.appendChild(modal);
-            
-            modal.addEventListener('click', (e) => {
-                if(e.target === modal) modal.remove();
+
+            modal.addEventListener('click', e => {
+                if (e.target === modal) modal.remove();
             });
         }
 
         function comprarSkin(skinName) {
-            alert(`🎉 Você será redirecionado para adquirir: ${skinName}!`);
-            const modal = document.querySelector('.skin-modal');
-            if(modal) modal.remove();
+            alert(`Você será redirecionado para adquirir: ${skinName}!`);
+            document.querySelector('.skin-modal')?.remove();
         }
 
+
+        /* ================================================
+           ESTILOS DO MODAL (injetados dinamicamente)
+        ================================================ */
         const modalStyles = document.createElement('style');
         modalStyles.textContent = `
             @keyframes fadeIn {
                 from { opacity: 0; }
-                to { opacity: 1; }
+                to   { opacity: 1; }
             }
-            
             @keyframes slideUp {
-                from {
-                    transform: translateY(50px);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
+                from { transform: translateY(50px); opacity: 0; }
+                to   { transform: translateY(0);    opacity: 1; }
             }
-            
+
             .skin-modal-content {
                 background: linear-gradient(135deg, #0a0a1a, #02060a);
                 padding: 2rem;
@@ -395,63 +653,44 @@
                 animation: slideUp 0.3s ease;
                 border: 1px solid #c8aa6e;
             }
-            
+
             .close-modal {
-                position: absolute;
-                top: 10px;
-                right: 20px;
-                font-size: 2rem;
-                background: none;
-                border: none;
-                color: #c8aa6e;
-                cursor: pointer;
+                position: absolute; top: 10px; right: 20px;
+                font-size: 2rem; background: none; border: none;
+                color: #c8aa6e; cursor: pointer;
                 transition: transform 0.2s;
                 z-index: 10;
             }
-            
-            .close-modal:hover {
-                transform: scale(1.2);
-            }
-            
+            .close-modal:hover { transform: scale(1.2); }
+
             .modal-image-container {
-                width: 100%;
-                height: 250px;
-                border-radius: 15px;
-                overflow: hidden;
+                width: 100%; height: 250px;
+                border-radius: 15px; overflow: hidden;
                 margin-bottom: 1.5rem;
                 box-shadow: 0 5px 20px rgba(0,0,0,0.3);
             }
-            
+
             .modal-skin-image {
-                width: 100%;
-                height: 100%;
+                width: 100%; height: 100%;
                 object-fit: cover;
                 transition: transform 0.3s;
             }
-            
-            .modal-skin-image:hover {
-                transform: scale(1.05);
-            }
-            
+            .modal-skin-image:hover { transform: scale(1.05); }
+
             .skin-modal-content h2 {
                 color: #c8aa6e;
                 font-family: 'Cinzel', serif;
                 margin-bottom: 0.8rem;
                 font-size: 1.5rem;
             }
-            
-            .skin-modal-content p {
-                color: #aaa;
-                margin-bottom: 1rem;
-            }
-            
+
+            .skin-modal-content p { color: #aaa; margin-bottom: 1rem; }
+
             .modal-details {
-                display: flex;
-                justify-content: center;
-                gap: 1rem;
-                margin: 1rem 0;
+                display: flex; justify-content: center;
+                gap: 1rem; margin: 1rem 0;
             }
-            
+
             .modal-details span {
                 background: rgba(200,170,110,0.1);
                 padding: 0.3rem 0.8rem;
@@ -459,7 +698,7 @@
                 font-size: 0.8rem;
                 color: #c8aa6e;
             }
-            
+
             .buy-btn {
                 background: transparent;
                 border: 1px solid #c8aa6e;
@@ -472,16 +711,13 @@
                 transition: all 0.3s;
                 width: 100%;
             }
-            
             .buy-btn:hover {
                 background: #c8aa6e;
                 color: #02060a;
                 transform: translateY(-2px);
             }
         `;
-        
         document.head.appendChild(modalStyles);
     </script>
-
 </body>
 </html>
