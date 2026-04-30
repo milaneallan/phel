@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aphelios | Skins Showcase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #02060a;
+            color: #f0e6d2;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h3, .logo {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 2px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 50px 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 3rem;
+            color: #c8aa6e;
+            text-shadow: 0 0 15px rgba(200, 170, 110, 0.5);
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: #888;
+        }
+
+        /* Galeria de Skins (Layout Dinâmico) */
+        .skin-gallery {
+            display: flex;
+            height: 60vh;
+            width: 95%;
+            margin: 0 auto;
+            gap: 10px;
+        }
+
+        /* Cards Interativos */
+        .interactive-card-bg {
+            flex: 1;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid #333;
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            cursor: pointer;
+            overflow: hidden;
+            filter: grayscale(40%);
+            border-radius: 0;
+        }
+
+        .interactive-card-bg:hover {
+            flex: 4;
+            filter: grayscale(0%);
+            border: 1px solid #c8aa6e;
+            box-shadow: 0 0 30px rgba(200, 170, 110, 0.3);
+        }
+
+        /* Overlay do card */
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+
+        .interactive-card-bg:hover .card-overlay {
+            transform: translateY(0);
+        }
+
+        .card-content {
+            text-align: left;
+            color: white;
+        }
+
+        .skin-badge {
+            font-size: 0.7rem;
+            color: #c8aa6e;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+            color: #f0e6d2;
+        }
+
+        .card-content p {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-bottom: 0.8rem;
+        }
+
+        .interactive-details {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .interactive-details span {
+            font-size: 0.75rem;
+            color: #c8aa6e;
+        }
+
+        .interactive-btn {
+            background: transparent;
+            border: 1px solid #c8aa6e;
+            color: #c8aa6e;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .interactive-btn:hover {
+            background: #c8aa6e;
+            color: #02060a;
+            transform: translateY(-2px);
+        }
+
+        /* Rodapé */
+        footer {
+            text-align: center;
+            padding: 60px;
+            font-style: italic;
+            color: #444;
+        }
+
+        /* Responsividade Básica */
+        @media (max-width: 768px) {
+            .skin-gallery {
+                flex-direction: column;
+                height: auto;
+            }
+            .interactive-card-bg {
+                height: 200px;
+            }
+            .interactive-card-bg:hover {
+                flex: none;
+                height: 350px;
+            }
+        }
+
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #02060a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c8aa6e;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a08a4e;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">APHELIOS</div>
+            <p class="subtitle">O Armamento da Fé</p>
+        </nav>
+    </header>
+
+    <main>
+        <section class="skin-gallery">
+            
+            <!-- Card Interativo 1 - Aphelios Lunari -->
+            <div class="interactive-card-bg" style="background-image: url('https://cdn.mos.cms.futurecdn.net/v2/t:0,l:240,cw:1440,ch:1080,q:80,w:1440/oBNwGUPPN8HZPpTuYqxYnW.jpg');">
+                <div class="card-overlay">
+                    <div class="card-content">
+                        <span class="skin-badge"> Original</span>
+                        <h3>Aphelios Lunari</h3>
+                        <p>O Guardião da Lua</p>
+                        <div class="interactive-details">
+                            <span> 4.9</span>
+                            <span> 975 RP</span>
+                        </div>
+                        <button class="interactive-btn" onclick="verSkin('Aphelios Lunari', 'https://i.pinimg.com/474x/c5/f5/40/c5f540041f86eb2ac91bc43b61624721.jpg')">Ver Detalhes</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Interativo 2 - Emissário da Escuridão -->
+            <div class="interactive-card-bg" style="background-image: url('img/emissario.jpg');">
+                <div class="card-overlay">
+                    <div class="card-content">
+                        <span class="skin-badge"> Épica</span>
+                        <h3>Emissário da Escuridão</h3>
+                        <p>Poder das Sombras</p>
+                        <div class="interactive-details">
+                            <span> 4.8</span>
+                            <span> 1350 RP</span>
+                        </div>
+                        <button class="interactive-btn" onclick="verSkin('Emissário da Escuridão', 'https://images.steamusercontent.com/ugc/1809877836467538078/2C5BF1957BBE2514182EC0214D37CFECA438A09D/?imw=512&&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false')">Ver Detalhes</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Interativo 3 - HEARTSTEEL -->
+            <div class="interactive-card-bg" style="background-image: url('https://www.esports.net/wp-content/uploads/2024/10/heartsteel-aphelios.jpg');">
+                <div class="card-overlay">
+                    <div class="card-content">
+                        <span class="skin-badge"> Banda</span>
+                        <h3>HEARTSTEEL</h3>
+                        <p>O Compositor do Grupo</p>
+                        <div class="interactive-details">
+                            <span> 4.9</span>
+                            <span> 1350 RP</span>
+                        </div>
+                        <button class="interactive-btn" onclick="verSkin('HEARTSTEEL Aphelios', 'https://www.esports.net/wp-content/uploads/2024/10/heartsteel-aphelios.jpg')">Ver Detalhes</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Interativo 4 - Florescer Espiritual -->
+            <div class="interactive-card-bg" style="background-image: url('https://lh7-rt.googleusercontent.com/docsz/AD_4nXcfYSJgjHrovz6_62WlMOzMeH7xV0HcvO5tVteHLlQTdgxzlBJ0YaDPJUOoigABLZFxu8tjA3fnw_Ty0VsrtYJgjAeLsaQth1sjQRMe3D9ZS_hmwJvJyAswLDXiBMYobJG1FmXFYnaYN-OkkX-tBRcUMml2?key=b7Zt1bkaikaJJvXVjwxIyg');">
+                <div class="card-overlay">
+                    <div class="card-content">
+                        <span class="skin-badge">Épica</span>
+                        <h3>Florescer Espiritual</h3>
+                        <p>Conexão com a Natureza</p>
+                        <div class="interactive-details">
+                            <span> 4.8</span>
+                            <span> 1350 RP</span>
+                        </div>
+                        <button class="interactive-btn" onclick="verSkin('Florescer Espiritual', 'https://lh7-rt.googleusercontent.com/docsz/AD_4nXcfYSJgjHrovz6_62WlMOzMeH7xV0HcvO5tVteHLlQTdgxzlBJ0YaDPJUOoigABLZFxu8tjA3fnw_Ty0VsrtYJgjAeLsaQth1sjQRMe3D9ZS_hmwJvJyAswLDXiBMYobJG1FmXFYnaYN-OkkX-tBRcUMml2?key=b7Zt1bkaikaJJvXVjwxIyg')">Ver Detalhes</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Interativo 5 - Termas do Florescer Espiritual Prestígio -->
+            <div class="interactive-card-bg" style="background-image: url('https://cdnb.artstation.com/p/assets/images/images/090/588/727/large/blake-byun-prestige-spirit-blossom-springs-aphelios-final-artstation-crop-2.jpg?1754323150');">
+                <div class="card-overlay">
+                    <div class="card-content">
+                        <span class="skin-badge">Prestígio</span>
+                        <h3>Termas do Florescer</h3>
+                        <p>Edição Especial Prestígio</p>
+                        <div class="interactive-details">
+                            <span> 5.0</span>
+                            <span> 150</span>
+                        </div>
+                        <button class="interactive-btn" onclick="verSkin('Termas do Florescer Espiritual Prestígio', 'https://cdnb.artstation.com/p/assets/images/images/090/588/727/large/blake-byun-prestige-spirit-blossom-springs-aphelios-final-artstation-crop-2.jpg?1754323150')">Ver Detalhes</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Interativo 6 - Fera Lunar -->
+            <div class="interactive-card-bg" style="background-image: url('img/lubeats.jpg');">
+                <div class="card-overlay">
+                    <div class="card-content">
+                        <span class="skin-badge"> Legado</span>
+                        <h3>Fera Lunar</h3>
+                        <p>A Besta da Noite</p>
+                        <div class="interactive-details">
+                            <span> 4.7</span>
+                            <span> 1350 RP</span>
+                        </div>
+                        <button class="interactive-btn" onclick="verSkin('Fera Lunar', 'img/lubeats.jpg')">Ver Detalhes</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Interativo 7 - EDG Aphelios -->
+            <div class="interactive-card-bg" style="background-image: url('https://opgg-static.akamaized.net/meta/images/lol/16.8.1/champion/tiles/Aphelios_18.jpg?image=q_auto:good,f_webp,w_722&v=1776924597');">
+                <div class="card-overlay">
+                    <div class="card-content">
+                        <span class="skin-badge">Mundial</span>
+                        <h3>EDG Aphelios</h3>
+                        <p>Campeões 2021</p>
+                        <div class="interactive-details">
+                            <span> 4.9</span>
+                            <span> 1350 RP</span>
+                        </div>
+                        <button class="interactive-btn" onclick="verSkin('EDG Aphelios', 'https://opgg-static.akamaized.net/meta/images/lol/16.8.1/champion/tiles/Aphelios_18.jpg?image=q_auto:good,f_webp,w_722&v=1776924597')">Ver Detalhes</button>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer>
+        <p>A lua sussurra o caminho. Alune guia os passos.</p>
+    </footer>
+
+    <script>
+        // Função para mostrar detalhes da skin COM IMAGEM
+        function verSkin(skinName, imagemUrl) {
+            const modal = document.createElement('div');
+            modal.className = 'skin-modal';
+            modal.innerHTML = `
+                <div class="skin-modal-content">
+                    <button class="close-modal" onclick="this.closest('.skin-modal').remove()">×</button>
+                    <div class="modal-image-container">
+                        <img src="${imagemUrl}" alt="${skinName}" class="modal-skin-image">
+                    </div>
+                    <h2>${skinName}</h2>
+                    <p>Skin exclusiva disponível na loja por tempo limitado!</p>
+                    <div class="modal-details">
+                        <span> Avaliação: 4.9</span>
+                        <span> Raridade: Especial</span>
+                    </div>
+                    <button class="buy-btn" onclick="comprarSkin('${skinName}')">Adquirir Agora</button>
+                </div>
+            `;
+            
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.95);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                animation: fadeIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', (e) => {
+                if(e.target === modal) modal.remove();
+            });
+        }
+
+        function comprarSkin(skinName) {
+            alert(`🎉 Você será redirecionado para adquirir: ${skinName}!`);
+            const modal = document.querySelector('.skin-modal');
+            if(modal) modal.remove();
+        }
+
+        const modalStyles = document.createElement('style');
+        modalStyles.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            
+            @keyframes slideUp {
+                from {
+                    transform: translateY(50px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+            
+            .skin-modal-content {
+                background: linear-gradient(135deg, #0a0a1a, #02060a);
+                padding: 2rem;
+                border-radius: 20px;
+                text-align: center;
+                max-width: 450px;
+                width: 90%;
+                position: relative;
+                animation: slideUp 0.3s ease;
+                border: 1px solid #c8aa6e;
+            }
+            
+            .close-modal {
+                position: absolute;
+                top: 10px;
+                right: 20px;
+                font-size: 2rem;
+                background: none;
+                border: none;
+                color: #c8aa6e;
+                cursor: pointer;
+                transition: transform 0.2s;
+                z-index: 10;
+            }
+            
+            .close-modal:hover {
+                transform: scale(1.2);
+            }
+            
+            .modal-image-container {
+                width: 100%;
+                height: 250px;
+                border-radius: 15px;
+                overflow: hidden;
+                margin-bottom: 1.5rem;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            }
+            
+            .modal-skin-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s;
+            }
+            
+            .modal-skin-image:hover {
+                transform: scale(1.05);
+            }
+            
+            .skin-modal-content h2 {
+                color: #c8aa6e;
+                font-family: 'Cinzel', serif;
+                margin-bottom: 0.8rem;
+                font-size: 1.5rem;
+            }
+            
+            .skin-modal-content p {
+                color: #aaa;
+                margin-bottom: 1rem;
+            }
+            
+            .modal-details {
+                display: flex;
+                justify-content: center;
+                gap: 1rem;
+                margin: 1rem 0;
+            }
+            
+            .modal-details span {
+                background: rgba(200,170,110,0.1);
+                padding: 0.3rem 0.8rem;
+                border-radius: 20px;
+                font-size: 0.8rem;
+                color: #c8aa6e;
+            }
+            
+            .buy-btn {
+                background: transparent;
+                border: 1px solid #c8aa6e;
+                color: #c8aa6e;
+                padding: 0.75rem 1.5rem;
+                border-radius: 5px;
+                font-weight: bold;
+                cursor: pointer;
+                margin-top: 1rem;
+                transition: all 0.3s;
+                width: 100%;
+            }
+            
+            .buy-btn:hover {
+                background: #c8aa6e;
+                color: #02060a;
+                transform: translateY(-2px);
+            }
+        `;
+        
+        document.head.appendChild(modalStyles);
+    </script>
+
+</body>
+</html>
